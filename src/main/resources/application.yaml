@@ -1,3 +1,53 @@
 spring:
   application:
     name: collaboration
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/assignment
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        show_sql: true
+        use_sql_comments: true
+        highlight_sql: true
+    open-in-view: false
+
+  swagger:
+    base-url: ${SWAGGER_BASE_URL:http://localhost:8080}
+
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+
+logging:
+  level:
+    root: info
+    com.sopt.collaboration: debug
+    org.springframework.web: info
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+    disable-swagger-default-url: true
+  api-docs:
+    path: /api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  override-with-generic-response: false
