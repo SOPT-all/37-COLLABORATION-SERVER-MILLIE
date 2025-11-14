@@ -8,23 +8,30 @@
 src/
 ├── main/
 │   ├── java/
-│   │   └── com.company.project/
+│   │   └── com.sopt.collaboration/
 │   │       ├── domain/           # 도메인별 패키지
-│   │       │   ├── user/
+│   │       │   ├── member/
 │   │       │   │   ├── controller/
 │   │       │   │   ├── service/
 │   │       │   │   ├── repository/
 │   │       │   │   ├── dto/
-│   │       │   │   └── entity/
+│   │       │   │   ├── entity/
+│   │       │   │   ├── exception/    # 도메인별 예외
+│   │       │   │   │   ├── MemberException.java
+│   │       │   │   │   └── MemberErrorCode.java
+│   │       │   │   └── success/      # 도메인별 성공 코드
+│   │       │   │       └── MemberSuccessCode.java
 │   │       │   └── order/
+│   │       │       ├── controller/
+│   │       │       ├── service/
+│   │       │       ├── repository/
+│   │       │       ├── dto/
+│   │       │       ├── entity/
+│   │       │       ├── exception/
+│   │       │       └── success/
 │   │       ├── global/           # 공통 설정
-│   │       │   ├── config/
-│   │       │   ├── exception/
-│   │       │   └── util/
 │   │       └── Application.java
 │   └── resources/
-│       ├── application.yml
-│       └── application-prod.yml
 └── test/
 ```
 
@@ -67,16 +74,25 @@ src/
 
 ```java
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    @PostMapping
-    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto request) {
-        return ResponseEntity.ok(userService.createUser(request));
-    }
+  // 데이터가 있는 성공 응답
+  @GetMapping("/{id}")
+  public CommonApiResponse<UserResponseDto> getUser(@PathVariable Long id) {
+    UserResponseDto user = userService.getUser(id);
+    return CommonApiResponse.success(SuccessCode.SUCCESS, user);
+  }
+
+  // 데이터가 없는 성공 응답 (생성, 삭제 등)
+  @PostMapping
+  public CommonApiResponse<Void> createUser(@Valid @RequestBody UserRequestDto request) {
+    userService.createUser(request);
+    return CommonApiResponse.success(SuccessCode.SUCCESS);
+  }
 }
 ```
 
@@ -276,3 +292,341 @@ spring:
 
 - 민감 정보는 환경 변수로 관리
 - `.env` 파일은 `.gitignore`에 추가
+
+## 11. 공통 응답 (API Response) 컨벤션
+
+**모든 API는 `CommonApiResponse`로 통일된 응답 형식을 사용합니다.**
+
+### 응답 구조
+
+```json
+{
+  "code": "S200",
+  "message": "성공",
+  "data": { ... }
+}
+```
+
+### Success Code 추가 방법
+
+**도메인별로 SuccessCode를 분리하여 관리합니다.**
+
+1. **공통 성공 코드** (`SuccessCode.java`)
+
+```java
+@Getter
+public enum SuccessCode implements SuccessType {
+    SUCCESS("S200", "성공");
+
+    private final String code;
+    private final String message;
+
+    SuccessCode(String code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+}
+```
+
+2. **도메인별 성공 코드** (예: `MemberSuccessCode.java`)
+
+```java
+@Getter
+public enum MemberSuccessCode implements SuccessType {
+    MEMBER_CREATED("M001", "회원 가입 성공"),
+    MEMBER_RETRIEVED("M002", "회원 정보 조회 성공"),
+    MEMBER_UPDATED("M003", "회원 정보 수정 성공"),
+    MEMBER_DELETED("M004", "회원 탈퇴 성공");
+
+    private final String code;
+    private final String message;
+
+    MemberSuccessCode(String code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+}
+```
+
+3. **Controller에서 사용**
+
+```java
+@GetMapping("/{id}")
+public CommonApiResponse<UserResponseDto> getUser(@PathVariable Long id) {
+    UserResponseDto user = userService.getUser(id);
+    return CommonApiResponse.success(MemberSuccessCode.MEMBER_RETRIEVED, user);
+}
+```
+
+**코드 네이밍 규칙**
+- `S###`: 공통 성공 코드
+- `M###`: Member(회원) 관련
+- `O###`: Order(주문) 관련
+- `B###`: Book(도서) 관련
+- 각 도메인별로 001부터 099까지 할당
+
+## 12. 예외 처리 컨벤션
+
+**도메인별로 ErrorCode와 Exception을 분리하여 관리합니다.**
+
+### 예외 처리 구조
+
+```
+GlobalExceptionHandler
+    ├── BaseException (커스텀 비즈니스 예외)
+    │   ├── MemberException extends BaseException
+    │   ├── OrderException extends BaseException
+    │   └── BookException extends BaseException
+    ├── MethodArgumentNotValidException (@Valid 검증 실패)
+    ├── IllegalArgumentException (도메인 검증 실패)
+    ├── HttpMessageNotReadableException (JSON 파싱 실패)
+    └── Exception (그 외 모든 예외)
+```
+
+### Error Code 추가 방법
+
+1. **공통 에러 코드** (`ErrorCode.java`)
+
+```java
+@Getter
+public enum ErrorCode implements ErrorType {
+    // 공통 에러 (C001~C099)
+    INVALID_INPUT("C001", "입력값이 올바르지 않습니다", 400),
+    INVALID_FORMAT("C002", "데이터 형식이 올바르지 않습니다", 400),
+    INTERNAL_SERVER_ERROR("C999", "서버 내부 오류가 발생했습니다", 500);
+
+    private final String code;
+    private final String message;
+    private final int status;
+
+    ErrorCode(String code, String message, int status) {
+        this.code = code;
+        this.message = message;
+        this.status = status;
+    }
+}
+```
+
+2. **도메인별 에러 코드** (예: `MemberErrorCode.java`)
+
+```java
+@Getter
+public enum MemberErrorCode implements ErrorType {
+    USER_NOT_FOUND("M001", "사용자를 찾을 수 없습니다", 404),
+    DUPLICATE_EMAIL("M002", "이미 존재하는 이메일입니다", 409),
+    INVALID_PASSWORD("M003", "비밀번호가 일치하지 않습니다", 401);
+
+    private final String code;
+    private final String message;
+    private final int status;
+
+    MemberErrorCode(String code, String message, int status) {
+        this.code = code;
+        this.message = message;
+        this.status = status;
+    }
+}
+```
+
+3. **도메인별 Exception** (예: `MemberException.java`)
+
+```java
+public class MemberException extends BaseException {
+    public MemberException(ErrorType errorType) {
+        super(errorType);
+    }
+
+    public MemberException(ErrorType errorType, String detail) {
+        super(errorType, detail);
+    }
+}
+```
+
+### Service에서 예외 발생
+
+```java
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class UserService {
+
+    private final UserRepository userRepository;
+
+    public UserResponseDto getUser(Long id) {
+        // 도메인별 Exception과 ErrorCode 사용
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new MemberException(MemberErrorCode.USER_NOT_FOUND));
+
+        return UserResponseDto.from(user);
+    }
+
+    public void validateEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            // 커스텀 메시지와 함께 예외 발생
+            throw new MemberException(MemberErrorCode.DUPLICATE_EMAIL, email);
+        }
+    }
+}
+```
+
+**코드 네이밍 규칙**
+- `C###`: 공통 에러 코드
+- `M###`: Member(회원) 관련
+- `O###`: Order(주문) 관련
+- `B###`: Book(도서) 관련
+- 각 도메인별로 001부터 099까지 할당
+
+**파일 위치**
+```
+domain/
+├── member/
+│   ├── exception/
+│   │   ├── MemberException.java
+│   │   └── MemberErrorCode.java
+│   └── success/
+│       └── MemberSuccessCode.java
+└── order/
+    ├── exception/
+    │   ├── OrderException.java
+    │   └── OrderErrorCode.java
+    └── success/
+        └── OrderSuccessCode.java
+```
+
+### 에러 응답 형식
+
+```json
+{
+  "code": "M001",
+  "message": "사용자를 찾을 수 없습니다",
+  "data": null
+}
+```
+
+**Validation 실패 시**
+```json
+{
+  "code": "C001",
+  "message": "입력값이 올바르지 않습니다",
+  "data": {
+    "email": "올바른 이메일 형식이 아닙니다",
+    "name": "이름은 필수입니다"
+  }
+}
+```
+
+## 13. Swagger 컨벤션
+
+**Swagger를 통해 자동으로 API 문서가 생성됩니다.**
+
+### Swagger 접속
+
+- 개발 환경: `http://localhost:8080/swagger-ui.html`
+- 배포 환경: `${SWAGGER_BASE_URL}/swagger-ui.html`
+
+### Controller에 Swagger 어노테이션 추가
+
+```java
+@RestController
+@RequestMapping("/api/users")
+@RequiredArgsConstructor
+@Tag(name = "User", description = "회원 관련 API")
+public class UserController {
+
+    private final UserService userService;
+
+    @Operation(summary = "회원 정보 조회", description = "ID로 회원 정보를 조회합니다")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공"),
+        @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음",
+                content = @Content(schema = @Schema(implementation = CommonApiResponse.class)))
+    })
+    @GetMapping("/{id}")
+    public CommonApiResponse<UserResponseDto> getUser(
+            @Parameter(description = "회원 ID", required = true) @PathVariable Long id) {
+        UserResponseDto user = userService.getUser(id);
+        return CommonApiResponse.success(SuccessCode.SUCCESS, user);
+    }
+
+    @Operation(summary = "회원 가입", description = "새로운 회원을 생성합니다")
+    @PostMapping
+    public CommonApiResponse<Void> createUser(
+            @Valid @RequestBody UserRequestDto request) {
+        userService.createUser(request);
+        return CommonApiResponse.success(SuccessCode.SUCCESS);
+    }
+}
+```
+
+### DTO에 Swagger 어노테이션 추가
+
+```java
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Schema(description = "회원 생성 요청")
+public class UserRequestDto {
+
+    @Schema(description = "회원 이름", example = "홍길동", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "이름은 필수입니다")
+    private String name;
+
+    @Schema(description = "이메일 주소", example = "hong@example.com", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Email(message = "올바른 이메일 형식이 아닙니다")
+    private String email;
+}
+
+@Getter
+@Builder
+@Schema(description = "회원 정보 응답")
+public class UserResponseDto {
+
+    @Schema(description = "회원 ID", example = "1")
+    private Long id;
+
+    @Schema(description = "회원 이름", example = "홍길동")
+    private String name;
+
+    @Schema(description = "이메일 주소", example = "hong@example.com")
+    private String email;
+
+    @Schema(description = "생성일시", example = "2024-01-15T10:30:00")
+    private LocalDateTime createdAt;
+}
+```
+
+### Swagger 어노테이션 정리
+
+| 어노테이션 | 사용 위치 | 설명 |
+|-----------|----------|------|
+| `@Tag` | Controller 클래스 | API 그룹 정의 |
+| `@Operation` | Controller 메서드 | API 설명 |
+| `@ApiResponses` | Controller 메서드 | 응답 코드별 설명 |
+| `@Parameter` | 메서드 파라미터 | 파라미터 설명 |
+| `@Schema` | DTO 클래스/필드 | 스키마 설명 |
+
+### Swagger 설정 확인
+
+`SwaggerConfig.java`에서 기본 정보 설정:
+
+```java
+@Configuration
+public class SwaggerConfig {
+
+    @Value("${spring.swagger.base-url:http://localhost:8080}")
+    private String baseUrl;
+
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("SOPT Collaboration API")
+                        .description("SOPT Collaboration Seminar API Documentation")
+                        .version("v1.0.0"))
+                .servers(List.of(
+                        new Server()
+                                .url(baseUrl)
+                                .description("Local Server")
+                ));
+    }
+}
+```
