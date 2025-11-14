@@ -89,10 +89,10 @@ $RECYCLE.BIN/
 *_REMOTE_*.txt
 
 ### Application Properties ###
-application-local.yml
-application-local.properties
-application-dev.yml
-application-dev.properties
+#application-local.yml
+#application-local.properties
+#application-dev.yml
+#application-dev.properties
 .env
 .env.local
 
