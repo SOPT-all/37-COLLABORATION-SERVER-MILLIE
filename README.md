@@ -603,30 +603,3 @@ public class UserResponseDto {
 | `@ApiResponses` | Controller 메서드 | 응답 코드별 설명 |
 | `@Parameter` | 메서드 파라미터 | 파라미터 설명 |
 | `@Schema` | DTO 클래스/필드 | 스키마 설명 |
-
-### Swagger 설정 확인
-
-`SwaggerConfig.java`에서 기본 정보 설정:
-
-```java
-@Configuration
-public class SwaggerConfig {
-
-    @Value("${spring.swagger.base-url:http://localhost:8080}")
-    private String baseUrl;
-
-    @Bean
-    public OpenAPI openAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title("SOPT Collaboration API")
-                        .description("SOPT Collaboration Seminar API Documentation")
-                        .version("v1.0.0"))
-                .servers(List.of(
-                        new Server()
-                                .url(baseUrl)
-                                .description("Local Server")
-                ));
-    }
-}
-```
