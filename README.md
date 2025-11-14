@@ -62,7 +62,7 @@ src/
 
 - 카멜케이스 사용: `userId`, `userName`
 - boolean 타입: `isActive`, `hasPermission`
-- Collection: 복수형 사용: `users`, `orderList`
+- Collection: 복수형 사용: `users`
 
 ## 3. 레이어별 책임
 
@@ -230,27 +230,27 @@ public class SecurityConfig {
 
 ## 7. Git Commit 컨벤션
 
-| 커밋 유형 | 의미 |
-| --- | --- |
-| `feat` | 새로운 기능 추가 |
-| `fix` | 버그 수정 |
-| `docs` | 문서 수정 |
-| `style` | 코드 formatting, 세미콜론 누락, 코드 자체의 변경이 없는 경우 |
-| `refactor` | 코드 리팩토링 |
-| `test` | 테스트 코드, 리팩토링 테스트 코드 추가 |
-| `chore` | 패키지 매니저 수정, 그 외 기타 수정 ex) .gitignore |
-| `Rename` | 파일 또는 폴더 명을 수정하거나 옮기는 작업만인 경우 |
-| `Remove` | 파일을 삭제하는 작업만 수행한 경우 |
-| `!HOTFIX` | 급하게 치명적인 버그를 고쳐야 하는 경우 |
+| 커밋 유형      | 의미 |
+|------------| --- |
+| `Feat`     | 새로운 기능 추가 |
+| `Fix`      | 버그 수정 |
+| `Docs`     | 문서 수정 |
+| `Style`    | 코드 formatting, 세미콜론 누락, 코드 자체의 변경이 없는 경우 |
+| `Refactor` | 코드 리팩토링 |
+| `Test`     | 테스트 코드, 리팩토링 테스트 코드 추가 |
+| `Chore`    | 패키지 매니저 수정, 그 외 기타 수정 ex) .gitignore |
+| `Rename`   | 파일 또는 폴더 명을 수정하거나 옮기는 작업만인 경우 |
+| `Remove`   | 파일을 삭제하는 작업만 수행한 경우 |
+| `!HOTFIX`  | 급하게 치명적인 버그를 고쳐야 하는 경우 |
 
 ```
 [Feat] <domain>: 새로운 기능 추가
-[fix] <domain>: 버그 수정
+[Fix] <domain>: 버그 수정
 [Refactor] <domain>: 코드 리팩토링
 [Style] <domain>: 코드 포맷팅, 세미콜론 누락 등
-[docs]: 문서 수정
-[test]: 테스트 코드 추가/수정
-[chore]: 빌드 업무, 패키지 매니저 수정
+[Docs]: 문서 수정
+[Test]: 테스트 코드 추가/수정
+[Chore]: 빌드 업무, 패키지 매니저 수정
 ```
 
 **예시**: [Feat] User: 로그인 기능 추가
