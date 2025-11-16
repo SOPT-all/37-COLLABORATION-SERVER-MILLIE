@@ -1,6 +1,8 @@
 package com.sopt.collaboration.service;
 
 import com.sopt.collaboration.entity.Category;
+import com.sopt.collaboration.global.exception.CategoryException;
+import com.sopt.collaboration.global.response.error.CategoryErrorCode;
 import com.sopt.collaboration.repository.CategoryRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -17,8 +19,14 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    // 전체 카테고리 조회
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+
+        if (categories.isEmpty()) {
+            throw new CategoryException(CategoryErrorCode.CATEGORY_NOT_FOUND);
+        }
+
+        return categories;
     }
+
 }
