@@ -70,24 +70,79 @@ jobs:
           EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         run: |
-          # 변수 정리 (앞뒤 공백, 줄바꿈 제거)
+          set -x  # 모든 명령어 출력
+
+          echo "=========================================="
+          echo "1. 원본 변수 확인"
+          echo "=========================================="
+          echo "EC2_HOST 길이: ${#EC2_HOST}"
+          echo "EC2_HOST (hex):"
+          echo "$EC2_HOST" | xxd
+          echo "EC2_USERNAME 길이: ${#EC2_USERNAME}"
+          echo "EC2_USERNAME: [$EC2_USERNAME]"
+
+          echo ""
+          echo "=========================================="
+          echo "2. 변수 정리"
+          echo "=========================================="
           export EC2_HOST=$(echo "$EC2_HOST" | xargs)
           export EC2_USERNAME=$(echo "$EC2_USERNAME" | xargs)
+          echo "정리된 EC2_HOST: [$EC2_HOST]"
+          echo "정리된 EC2_HOST 길이: ${#EC2_HOST}"
+          echo "정리된 EC2_HOST (hex):"
+          echo "$EC2_HOST" | xxd
+          echo "정리된 EC2_USERNAME: [$EC2_USERNAME]"
 
-          echo "Cleaned EC2_HOST: [$EC2_HOST]"
-          echo "Cleaned EC2_USERNAME: [$EC2_USERNAME]"
+          echo ""
+          echo "=========================================="
+          echo "3. SSH 키 설정"
+          echo "=========================================="
+          echo "$EC2_SSH_KEY" > ec2_key.pem
+          chmod 400 ec2_key.pem
+          echo "SSH 키 파일 크기: $(wc -c < ec2_key.pem) bytes"
+          echo "SSH 키 파일 첫 줄:"
+          head -n 1 ec2_key.pem
 
-          # SSH 키 설정                                                                       
-          echo "$EC2_SSH_KEY" > ec2_key.pem                                                   
-          chmod 400 ec2_key.pem                                                               
+          echo ""
+          echo "=========================================="
+          echo "4. JAR 파일 확인"
+          echo "=========================================="
+          ls -lh ./artifacts/
+          JAR_FILE=$(ls ./artifacts/*-SNAPSHOT.jar)
+          echo "전송할 JAR: $JAR_FILE"
 
-          # JAR 파일을 EC2로 전송
-          scp -i ec2_key.pem -o StrictHostKeyChecking=no \
-            ./artifacts/*-SNAPSHOT.jar $EC2_USERNAME@$EC2_HOST:~/app/collaboration.jar                             
+          echo ""
+          echo "=========================================="
+          echo "5. SCP 시작"
+          echo "=========================================="
+          echo "대상: ${EC2_USERNAME}@${EC2_HOST}:~/app/collaboration.jar"
 
-          # EC2에서 애플리케이션 재시작                                                       
-          ssh -i ec2_key.pem -o StrictHostKeyChecking=no \                                    
-            $EC2_USERNAME@$EC2_HOST << 'EOF'                                                  
-            sudo systemctl restart collaboration                                              
-            sudo systemctl status collaboration                                               
-          EOF                                                                                 
+          if scp -v -i ec2_key.pem -o StrictHostKeyChecking=no \
+            ./artifacts/*-SNAPSHOT.jar ${EC2_USERNAME}@${EC2_HOST}:~/app/collaboration.jar 2>&1; then
+            echo "✓ SCP 성공"
+          else
+            SCP_EXIT=$?
+            echo "✗ SCP 실패 (exit code: $SCP_EXIT)"
+            exit $SCP_EXIT
+          fi
+
+          echo ""
+          echo "=========================================="
+          echo "6. SSH 연결 및 서비스 재시작"
+          echo "=========================================="
+          echo "연결 대상: ${EC2_USERNAME}@${EC2_HOST}"
+
+          if ssh -v -i ec2_key.pem -o StrictHostKeyChecking=no \
+            ${EC2_USERNAME}@${EC2_HOST} \
+            'sudo systemctl restart collaboration && sudo systemctl status collaboration' 2>&1; then
+            echo "✓ SSH 성공"
+          else
+            SSH_EXIT=$?
+            echo "✗ SSH 실패 (exit code: $SSH_EXIT)"
+            exit $SSH_EXIT
+          fi
+
+          echo ""
+          echo "=========================================="
+          echo "배포 완료!"
+          echo "=========================================="                                                                                 
