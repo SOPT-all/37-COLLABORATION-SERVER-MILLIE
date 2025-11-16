@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ 4-feature/server-infra ]
+    branches: [ main ]
   pull_request:
-    branches: [ 4-feature/server-infra ]
+    branches: [ main ]
 
 jobs:
   build-and-test:
