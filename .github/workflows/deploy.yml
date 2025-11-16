@@ -54,12 +54,29 @@ jobs:
           ls -lah ./artifacts/
           echo "======================="
 
+      - name: Debug secrets
+        run: |
+          echo "EC2_HOST length: ${#EC2_HOST}"
+          echo "EC2_USERNAME length: ${#EC2_USERNAME}"
+          echo "EC2_HOST (hex): " | xxd
+          echo "$EC2_HOST" | xxd
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+
       - name: Deploy to EC2
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         run: |
+          # 변수 정리 (앞뒤 공백 제거)
+          EC2_HOST=$(echo "$EC2_HOST" | tr -d '[:space:]')
+          EC2_USERNAME=$(echo "$EC2_USERNAME" | tr -d '[:space:]')
+
+          echo "Cleaned EC2_HOST: $EC2_HOST"
+          echo "Cleaned EC2_USERNAME: $EC2_USERNAME"
+
           # SSH 키 설정                                                                       
           echo "$EC2_SSH_KEY" > ec2_key.pem                                                   
           chmod 400 ec2_key.pem                                                               
