@@ -33,7 +33,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: collaboration-jar
-          path: build/libs/*.jar
+          path: build/libs/*-SNAPSHOT.jar
+          if-no-files-found: error
 
   deploy:
     needs: build-and-test
@@ -45,6 +46,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: collaboration-jar
+          path: ./artifacts
+
+      - name: List downloaded files
+        run: |
+          echo "=== Downloaded files ==="
+          ls -lah ./artifacts/
+          echo "======================="
 
       - name: Deploy to EC2
         env:
@@ -56,9 +64,9 @@ jobs:
           echo "$EC2_SSH_KEY" > ec2_key.pem                                                   
           chmod 400 ec2_key.pem                                                               
 
-          # JAR 파일을 EC2로 전송                                                             
-          scp -i ec2_key.pem -o StrictHostKeyChecking=no \                                    
-            *.jar $EC2_USERNAME@$EC2_HOST:~/app/collaboration.jar                             
+          # JAR 파일을 EC2로 전송
+          scp -i ec2_key.pem -o StrictHostKeyChecking=no \
+            ./artifacts/*-SNAPSHOT.jar $EC2_USERNAME@$EC2_HOST:~/app/collaboration.jar                             
 
           # EC2에서 애플리케이션 재시작                                                       
           ssh -i ec2_key.pem -o StrictHostKeyChecking=no \                                    
