@@ -20,7 +20,7 @@ public class MillieController {
     private final CategoryService categoryService;
 
     // 전체 카테고리 조회
-    @GetMapping
+    @GetMapping("/categories")
     public CommonApiResponse<List<CategoryResponseDto>> getAllCategories() {
         List<CategoryResponseDto> categories = categoryService.getAllCategories()
                 .stream()
