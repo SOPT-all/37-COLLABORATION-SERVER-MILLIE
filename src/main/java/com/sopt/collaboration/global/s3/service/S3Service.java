@@ -1,4 +1,4 @@
-package com.sopt.collaboration.global.service;
+package com.sopt.collaboration.global.s3.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
