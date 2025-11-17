@@ -11,7 +11,7 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long category_id;
+    private Long categoryId;
 
     @Column(nullable = false, length = 20)
     private String title;
@@ -20,12 +20,12 @@ public class Category {
     private String description;
 
     @Column(length = 200)
-    private String image_url;
+    private String imageUrl;
 
     @Builder
-    private Category(String title, String description, String image_url) {
+    private Category(String title, String description, String imageUrl) {
         this.title = title;
         this.description = description;
-        this.image_url = image_url;
+        this.imageUrl = imageUrl;
     }
 }
