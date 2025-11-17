@@ -2,6 +2,7 @@ package com.sopt.collaboration.dto;
 
 import com.sopt.collaboration.entity.Category;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -20,6 +21,7 @@ public class CategoryResponseDto {
     @Schema(description = "카테고리 이미지 URL", example = "s3://millie-collaboration-bucket/images/category-images/CATEGORY-IMAGE-NOVEL.png")
     private String imageUrl;
 
+    @Builder
     private CategoryResponseDto(Long categoryId, String title, String description, String imageUrl) {
         this.categoryId = categoryId;
         this.title = title;
@@ -28,11 +30,11 @@ public class CategoryResponseDto {
     }
 
     public static CategoryResponseDto fromEntity(Category category) {
-        return new CategoryResponseDto(
-                category.getCategory_id(),
-                category.getTitle(),
-                category.getDescription(),
-                category.getImage_url()
-        );
+        return CategoryResponseDto.builder()
+                .categoryId(category.getCategoryId())
+                .title(category.getTitle())
+                .description(category.getDescription())
+                .imageUrl(category.getImageUrl())
+                .build();
     }
 }
