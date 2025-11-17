@@ -1,5 +1,6 @@
 package com.sopt.collaboration.service;
 
+import com.sopt.collaboration.dto.CategoryResponseDto;
 import com.sopt.collaboration.entity.Category;
 import com.sopt.collaboration.global.exception.CategoryException;
 import com.sopt.collaboration.global.response.error.CategoryErrorCode;
@@ -17,13 +18,15 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public List<Category> getAllCategories() {
+    public List<CategoryResponseDto> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
 
         if (categories.isEmpty()) {
             throw new CategoryException(CategoryErrorCode.CATEGORY_NOT_FOUND);
         }
 
-        return categories;
+        return categories.stream()
+                .map(CategoryResponseDto::fromEntity)
+                .toList();
     }
 }

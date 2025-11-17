@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -32,11 +31,7 @@ public class MillieController {
     })
     @GetMapping("/categories")
     public CommonApiResponse<List<CategoryResponseDto>> getAllCategories() {
-        List<CategoryResponseDto> categories = categoryService.getAllCategories()
-                .stream()
-                .map(CategoryResponseDto::fromEntity)
-                .collect(Collectors.toList());
-
+        List<CategoryResponseDto> categories = categoryService.getAllCategories();
         return CommonApiResponse.success(CategorySuccessCode.CATEGORY_RETRIEVED, categories);
     }
 }
