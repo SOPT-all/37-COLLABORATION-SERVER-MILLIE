@@ -2,7 +2,6 @@ package com.sopt.collaboration.controller;
 
 import com.sopt.collaboration.dto.CategoryResponseDto;
 import com.sopt.collaboration.global.response.CommonApiResponse;
-import com.sopt.collaboration.global.response.success.CategorySuccessCode;
 import com.sopt.collaboration.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import static com.sopt.collaboration.global.response.success.SuccessCode.CATEGORY_RETRIEVED;
 
 @RestController
 @RequestMapping("/api")
@@ -32,6 +33,6 @@ public class MillieController {
     @GetMapping("/categories")
     public CommonApiResponse<List<CategoryResponseDto>> getAllCategories() {
         List<CategoryResponseDto> categories = categoryService.getAllCategories();
-        return CommonApiResponse.success(CategorySuccessCode.CATEGORY_RETRIEVED, categories);
+        return CommonApiResponse.success(CATEGORY_RETRIEVED, categories);
     }
 }
