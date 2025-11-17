@@ -1,0 +1,73 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: collaboration-jar
+          path: build/libs/*-SNAPSHOT.jar
+          if-no-files-found: error
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: collaboration-jar
+          path: ./artifacts
+
+      - name: Deploy to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        run: |
+          # 변수 정리 (공백/줄바꿈 제거)
+          export EC2_HOST=$(echo "$EC2_HOST" | xargs)
+          export EC2_USERNAME=$(echo "$EC2_USERNAME" | xargs)
+
+          # SSH 키 설정
+          echo "$EC2_SSH_KEY" > ec2_key.pem
+          chmod 400 ec2_key.pem
+
+          # JAR 파일 EC2로 전송
+          echo "📦 Deploying to ${EC2_USERNAME}@${EC2_HOST}"
+          scp -i ec2_key.pem -o StrictHostKeyChecking=no \
+            ./artifacts/*-SNAPSHOT.jar ${EC2_USERNAME}@${EC2_HOST}:~/app/collaboration.jar
+
+          # 애플리케이션 재시작
+          echo "🔄 Restarting application..."
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no \
+            ${EC2_USERNAME}@${EC2_HOST} \
+            'sudo systemctl restart collaboration && sudo systemctl status collaboration'
+
+          echo "✅ Deployment completed successfully!"                                                                                 
