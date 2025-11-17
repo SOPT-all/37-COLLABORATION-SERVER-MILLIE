@@ -6,10 +6,10 @@ import lombok.Getter;
 public enum ErrorCode implements ErrorType {
 
 	// 공통 에러
-	INVALID_INPUT("C001", "입력값이 올바르지 않습니다", 400),
-	INVALID_FORMAT("C002", "데이터 형식이 올바르지 않습니다", 400),
+	INVALID_INPUT("E001", "입력값이 올바르지 않습니다", 400),
+	INVALID_FORMAT("E002", "데이터 형식이 올바르지 않습니다", 400),
 
-	INTERNAL_SERVER_ERROR("C999", "서버 내부 오류가 발생했습니다", 500);
+	INTERNAL_SERVER_ERROR("E999", "서버 내부 오류가 발생했습니다", 500);
 
 	private final String code;
 	private final String message;
