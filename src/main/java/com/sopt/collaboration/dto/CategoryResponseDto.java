@@ -29,12 +29,12 @@ public class CategoryResponseDto {
         this.imageUrl = imageUrl;
     }
 
-    public static CategoryResponseDto fromEntity(Category category) {
+    public static CategoryResponseDto of(Category category, String imageUrl) {
         return CategoryResponseDto.builder()
                 .categoryId(category.getCategoryId())
                 .title(category.getTitle())
                 .description(category.getDescription())
-                .imageUrl(category.getImageUrl())
+                .imageUrl(imageUrl)
                 .build();
     }
 }

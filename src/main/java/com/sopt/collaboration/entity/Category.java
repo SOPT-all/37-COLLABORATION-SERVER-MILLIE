@@ -19,13 +19,13 @@ public class Category {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(length = 200)
-    private String imageUrl;
+    @Column(name = "category_image_key")
+    private String categoryImageKey;
 
     @Builder
-    private Category(String title, String description, String imageUrl) {
+    private Category(String title, String description, String categoryImageKey) {
         this.title = title;
         this.description = description;
-        this.imageUrl = imageUrl;
+        this.categoryImageKey = categoryImageKey;
     }
 }
