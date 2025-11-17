@@ -9,26 +9,11 @@ src/
 ├── main/
 │   ├── java/
 │   │   └── com.sopt.collaboration/
-│   │       ├── domain/           # 도메인별 패키지
-│   │       │   ├── member/
-│   │       │   │   ├── controller/
-│   │       │   │   ├── service/
-│   │       │   │   ├── repository/
-│   │       │   │   ├── dto/
-│   │       │   │   ├── entity/
-│   │       │   │   ├── exception/    # 도메인별 예외
-│   │       │   │   │   ├── MemberException.java
-│   │       │   │   │   └── MemberErrorCode.java
-│   │       │   │   └── success/      # 도메인별 성공 코드
-│   │       │   │       └── MemberSuccessCode.java
-│   │       │   └── order/
-│   │       │       ├── controller/
-│   │       │       ├── service/
-│   │       │       ├── repository/
-│   │       │       ├── dto/
-│   │       │       ├── entity/
-│   │       │       ├── exception/
-│   │       │       └── success/
+│   │       ├── controller/
+│   │       ├── service/
+│   │       ├── repository/
+│   │       ├── dto/
+│   │       ├── entity/
 │   │       ├── global/           # 공통 설정
 │   │       └── Application.java
 │   └── resources/
@@ -309,15 +294,19 @@ spring:
 
 ### Success Code 추가 방법
 
-**도메인별로 SuccessCode를 분리하여 관리합니다.**
+**SuccessCode는 global에서 통합 관리합니다.**
 
 1. **공통 성공 코드** (`SuccessCode.java`)
 
 ```java
 @Getter
 public enum SuccessCode implements SuccessType {
-    SUCCESS("S200", "성공");
+	// 공통 응답 코드
+    SUCCESS("S200", "성공"),
 
+	// 리뷰 응답 코드
+    REVIEW_CREATED("R201", "리뷰 작성 성공");
+	
     private final String code;
     private final String message;
 
@@ -328,55 +317,32 @@ public enum SuccessCode implements SuccessType {
 }
 ```
 
-2. **도메인별 성공 코드** (예: `MemberSuccessCode.java`)
-
-```java
-@Getter
-public enum MemberSuccessCode implements SuccessType {
-    MEMBER_CREATED("M001", "회원 가입 성공"),
-    MEMBER_RETRIEVED("M002", "회원 정보 조회 성공"),
-    MEMBER_UPDATED("M003", "회원 정보 수정 성공"),
-    MEMBER_DELETED("M004", "회원 탈퇴 성공");
-
-    private final String code;
-    private final String message;
-
-    MemberSuccessCode(String code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-}
-```
-
-3. **Controller에서 사용**
+2. **Controller에서 사용**
 
 ```java
 @GetMapping("/{id}")
 public CommonApiResponse<UserResponseDto> getUser(@PathVariable Long id) {
     UserResponseDto user = userService.getUser(id);
-    return CommonApiResponse.success(MemberSuccessCode.MEMBER_RETRIEVED, user);
+    return CommonApiResponse.success(SuccessCode.MEMBER_RETRIEVED, user);
 }
 ```
 
 **코드 네이밍 규칙**
 - `S###`: 공통 성공 코드
-- `M###`: Member(회원) 관련
-- `O###`: Order(주문) 관련
-- `B###`: Book(도서) 관련
+- `R###`: 리뷰 관련
+- `C###`: 카테고리 관련
+- `B###`: Book 관련
 - 각 도메인별로 001부터 099까지 할당
 
 ## 12. 예외 처리 컨벤션
 
-**도메인별로 ErrorCode와 Exception을 분리하여 관리합니다.**
+**global ErrorCode와 BaseException을 사용하여 관리합니다.**
 
 ### 예외 처리 구조
 
 ```
 GlobalExceptionHandler
     ├── BaseException (커스텀 비즈니스 예외)
-    │   ├── MemberException extends BaseException
-    │   ├── OrderException extends BaseException
-    │   └── BookException extends BaseException
     ├── MethodArgumentNotValidException (@Valid 검증 실패)
     ├── IllegalArgumentException (도메인 검증 실패)
     ├── HttpMessageNotReadableException (JSON 파싱 실패)
@@ -385,16 +351,19 @@ GlobalExceptionHandler
 
 ### Error Code 추가 방법
 
-1. **공통 에러 코드** (`ErrorCode.java`)
+1. **에러 코드** (`ErrorCode.java`)
 
 ```java
 @Getter
 public enum ErrorCode implements ErrorType {
     // 공통 에러 (C001~C099)
-    INVALID_INPUT("C001", "입력값이 올바르지 않습니다", 400),
-    INVALID_FORMAT("C002", "데이터 형식이 올바르지 않습니다", 400),
-    INTERNAL_SERVER_ERROR("C999", "서버 내부 오류가 발생했습니다", 500);
+    INVALID_INPUT("E001", "입력값이 올바르지 않습니다", 400),
+    INVALID_FORMAT("E002", "데이터 형식이 올바르지 않습니다", 400),
+    INTERNAL_SERVER_ERROR("E999", "서버 내부 오류가 발생했습니다", 500),
 
+	// 리뷰 에러
+    REVIEW_NOT_FOUND("R001", "리뷰를 찾을 수 없습니다", 404);
+	
     private final String code;
     private final String message;
     private final int status;
@@ -403,41 +372,6 @@ public enum ErrorCode implements ErrorType {
         this.code = code;
         this.message = message;
         this.status = status;
-    }
-}
-```
-
-2. **도메인별 에러 코드** (예: `MemberErrorCode.java`)
-
-```java
-@Getter
-public enum MemberErrorCode implements ErrorType {
-    USER_NOT_FOUND("M001", "사용자를 찾을 수 없습니다", 404),
-    DUPLICATE_EMAIL("M002", "이미 존재하는 이메일입니다", 409),
-    INVALID_PASSWORD("M003", "비밀번호가 일치하지 않습니다", 401);
-
-    private final String code;
-    private final String message;
-    private final int status;
-
-    MemberErrorCode(String code, String message, int status) {
-        this.code = code;
-        this.message = message;
-        this.status = status;
-    }
-}
-```
-
-3. **도메인별 Exception** (예: `MemberException.java`)
-
-```java
-public class MemberException extends BaseException {
-    public MemberException(ErrorType errorType) {
-        super(errorType);
-    }
-
-    public MemberException(ErrorType errorType, String detail) {
-        super(errorType, detail);
     }
 }
 ```
@@ -455,7 +389,7 @@ public class UserService {
     public UserResponseDto getUser(Long id) {
         // 도메인별 Exception과 ErrorCode 사용
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new MemberException(MemberErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
 
         return UserResponseDto.from(user);
     }
@@ -463,35 +397,18 @@ public class UserService {
     public void validateEmail(String email) {
         if (userRepository.existsByEmail(email)) {
             // 커스텀 메시지와 함께 예외 발생
-            throw new MemberException(MemberErrorCode.DUPLICATE_EMAIL, email);
+            throw new BaseException(ErrorCode.DUPLICATE_EMAIL, email);
         }
     }
 }
 ```
 
 **코드 네이밍 규칙**
-- `C###`: 공통 에러 코드
-- `M###`: Member(회원) 관련
-- `O###`: Order(주문) 관련
-- `B###`: Book(도서) 관련
+- `E###`: 공통 에러 코드
+- `R###`: 리뷰 관련
+- `C###`: 카테고리 관련
+- `B###`: Book 관련
 - 각 도메인별로 001부터 099까지 할당
-
-**파일 위치**
-```
-domain/
-├── member/
-│   ├── exception/
-│   │   ├── MemberException.java
-│   │   └── MemberErrorCode.java
-│   └── success/
-│       └── MemberSuccessCode.java
-└── order/
-    ├── exception/
-    │   ├── OrderException.java
-    │   └── OrderErrorCode.java
-    └── success/
-        └── OrderSuccessCode.java
-```
 
 ### 에러 응답 형식
 
@@ -506,7 +423,7 @@ domain/
 **Validation 실패 시**
 ```json
 {
-  "code": "C001",
+  "code": "E001",
   "message": "입력값이 올바르지 않습니다",
   "data": {
     "email": "올바른 이메일 형식이 아닙니다",
