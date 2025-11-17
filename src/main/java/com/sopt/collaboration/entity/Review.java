@@ -47,13 +47,9 @@ public class Review {
 	}
 
 	public void toggleLike() {
-		if (this.isLiked) {
-			this.isLiked = false;
-			this.likeCount = Math.max(0, this.likeCount - 1);
-		} else {
-			this.isLiked = true;
-			this.likeCount++;
-		}
+		int delta = this.isLiked ? -1 : 1;
+		this.likeCount = Math.max(0, this.likeCount + delta);
+		this.isLiked = !this.isLiked;
 	}
 
 }
