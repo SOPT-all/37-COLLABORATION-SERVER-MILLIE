@@ -1,5 +1,6 @@
 package com.sopt.collaboration.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,16 +18,22 @@ public class Review {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	private Long bookId; // 추후 Book 엔티티와 연관관계 설정 예정
 
+	@Column(nullable = false)
 	private String reviewerName;
 
+	@Column(nullable = false)
 	private String createdDate;
 
+	@Column(nullable = false)
 	private String content;
 
+	@Column(nullable = false)
 	private int likeCount;
 
+	@Column(nullable = false)
 	private boolean isLiked;
 
 	@Builder
