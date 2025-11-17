@@ -11,8 +11,11 @@ public enum ErrorCode implements ErrorType {
 
 	INTERNAL_SERVER_ERROR("E999", "서버 내부 오류가 발생했습니다", 500),
 
-	// 리뷰 관련 에러
-	REVIEW_NOT_FOUND("R001", "리뷰를 찾을 수 없습니다", 404);
+	// 리뷰 에러
+	REVIEW_NOT_FOUND("R001", "리뷰를 찾을 수 없습니다", 404),
+
+    // 카테고리 에러
+    CATEGORY_NOT_FOUND("C404", "카테고리를 찾을 수 없습니다", 404);
 
 	private final String code;
 	private final String message;
