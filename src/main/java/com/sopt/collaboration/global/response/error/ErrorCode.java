@@ -9,6 +9,9 @@ public enum ErrorCode implements ErrorType {
 	INVALID_INPUT("C001", "입력값이 올바르지 않습니다", 400),
 	INVALID_FORMAT("C002", "데이터 형식이 올바르지 않습니다", 400),
 
+	// 리뷰 관련 에러
+	REVIEW_NOT_FOUND("R001", "리뷰를 찾을 수 없습니다", 404),
+
 	INTERNAL_SERVER_ERROR("C999", "서버 내부 오류가 발생했습니다", 500);
 
 	private final String code;

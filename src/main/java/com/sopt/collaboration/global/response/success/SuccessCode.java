@@ -4,7 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum SuccessCode implements SuccessType {
-	SUCCESS("S200", "성공");
+	SUCCESS("S200", "성공"),
+
+	// 리뷰 관련 성공
+	REVIEW_LIKE_TOGGLED("R001", "리뷰 좋아요가 업데이트되었습니다");
 
 	private final String code;
 	private final String message;

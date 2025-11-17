@@ -1,0 +1,52 @@
+package com.sopt.collaboration.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Review {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	private Long bookId; // 추후 Book 엔티티와 연관관계 설정 예정
+
+	private String reviewerName;
+
+	private String createdDate;
+
+	private String content;
+
+	private int likeCount;
+
+	private boolean isLiked;
+
+	@Builder
+	private Review(Long bookId, String reviewerName, String createdDate, String content) {
+		this.bookId = bookId;
+		this.reviewerName = reviewerName;
+		this.createdDate = createdDate;
+		this.content = content;
+		this.likeCount = 0;
+		this.isLiked = false;
+	}
+
+	public void toggleLike() {
+		if (this.isLiked) {
+			this.isLiked = false;
+			this.likeCount = Math.max(0, this.likeCount - 1);
+		} else {
+			this.isLiked = true;
+			this.likeCount++;
+		}
+	}
+
+}
