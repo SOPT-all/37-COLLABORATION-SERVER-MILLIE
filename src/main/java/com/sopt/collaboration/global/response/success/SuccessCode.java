@@ -4,7 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum SuccessCode implements SuccessType {
-	SUCCESS("S200", "성공");
+    // 공통 응답 코드
+	SUCCESS("S200", "성공"),
+
+    // 카테고리 응답 코드
+    CATEGORY_RETRIEVED("C201", "카테고리 조회 성공");
 
 	private final String code;
 	private final String message;
