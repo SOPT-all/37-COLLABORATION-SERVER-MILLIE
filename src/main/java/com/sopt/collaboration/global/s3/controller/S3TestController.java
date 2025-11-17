@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sopt.collaboration.global.response.CommonApiResponse;
 import com.sopt.collaboration.global.response.success.SuccessCode;
-import com.sopt.collaboration.global.service.S3Service;
+import com.sopt.collaboration.global.s3.service.S3Service;
 
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.services.s3.S3Client;
