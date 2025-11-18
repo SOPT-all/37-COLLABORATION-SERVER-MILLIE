@@ -12,7 +12,10 @@ public enum SuccessCode implements SuccessType {
 	REVIEW_LIKE_TOGGLED("R001", "리뷰 좋아요가 업데이트되었습니다"),
 
 	// 카테고리 응답 코드
-	CATEGORY_RETRIEVED("C201", "카테고리 조회 성공");
+	CATEGORY_RETRIEVED("C201", "카테고리 조회 성공"),
+
+    // 검색 응답 코드
+    SUCCESS_BOOK_SEARCH("B201", "도서 검색 조회 성공");
 
 	private final String code;
 	private final String message;
