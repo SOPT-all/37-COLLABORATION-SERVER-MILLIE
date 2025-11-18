@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
+@Builder
 @Getter
 @Schema(name = "CategoryResponseDto", description = "카테고리 응답 DTO")
 public class CategoryResponseDto {
@@ -20,14 +21,6 @@ public class CategoryResponseDto {
 
     @Schema(description = "카테고리 이미지 URL", example = "s3://millie-collaboration-bucket/images/category-images/CATEGORY-IMAGE-NOVEL.png")
     private String imageUrl;
-
-    @Builder
-    private CategoryResponseDto(Long categoryId, String title, String description, String imageUrl) {
-        this.categoryId = categoryId;
-        this.title = title;
-        this.description = description;
-        this.imageUrl = imageUrl;
-    }
 
     public static CategoryResponseDto of(Category category, String imageUrl) {
         return CategoryResponseDto.builder()
