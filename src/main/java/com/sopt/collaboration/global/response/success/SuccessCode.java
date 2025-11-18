@@ -15,7 +15,7 @@ public enum SuccessCode implements SuccessType {
 	CATEGORY_RETRIEVED("C201", "카테고리 조회 성공"),
 
     // 검색 응답 코드
-    SUCCESS_BOOK_SEARCH("B201", "도서 검색 조회 성공");
+    BOOK_RETRIEVED("B201", "도서 검색 조회 성공");
 
 	private final String code;
 	private final String message;

@@ -18,7 +18,7 @@ public enum ErrorCode implements ErrorType {
     CATEGORY_NOT_FOUND("C404", "카테고리를 찾을 수 없습니다", 404),
 
     // 도서 검색 에러
-    BOOK_NOT_FOUND("B404", "해당 도서를 찾을 수 없습니다.", 404);
+    INVALID_KEYWORD("B404", "검색 키워드를 찾을 수 없습니다", 404);
 
 	private final String code;
 	private final String message;
