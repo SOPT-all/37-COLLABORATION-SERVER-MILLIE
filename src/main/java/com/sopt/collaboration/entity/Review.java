@@ -1,10 +1,6 @@
 package com.sopt.collaboration.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,8 +14,9 @@ public class Review {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
-	private Long bookId; // 추후 Book 엔티티와 연관관계 설정 예정
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
 
 	@Column(nullable = false)
 	private String reviewerName;
@@ -37,8 +34,8 @@ public class Review {
 	private boolean isLiked;
 
 	@Builder
-	private Review(Long bookId, String reviewerName, String createdDate, String content) {
-		this.bookId = bookId;
+	private Review(Book book, String reviewerName, String createdDate, String content) {
+		this.book = book;
 		this.reviewerName = reviewerName;
 		this.createdDate = createdDate;
 		this.content = content;
