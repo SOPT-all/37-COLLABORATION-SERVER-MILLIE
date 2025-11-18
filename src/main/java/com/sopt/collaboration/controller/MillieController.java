@@ -68,7 +68,7 @@ public class MillieController {
         BookSearchResponseDto response = bookService.searchBooks(keyword);
 
         return CommonApiResponse.success(
-                SuccessCode.SUCCESS_BOOK_SEARCH,
+                SuccessCode.BOOK_RETRIEVED,
                 response
         );
     }
