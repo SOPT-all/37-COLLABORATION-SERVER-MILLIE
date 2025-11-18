@@ -30,6 +30,9 @@ public class BookSummaryDto {
     @Schema(description = "완독 예상 시간", example = "240")
     private Integer completionTime;
 
+    @Schema(description = "오디어북 여부", example = "FALSE")
+    private Boolean isAudiobook;
+
     public static BookSummaryDto from(Book book, String imageUrl) {
         return BookSummaryDto.builder()
                 .bookId(book.getBookId())
@@ -38,6 +41,7 @@ public class BookSummaryDto {
                 .bookAuthor(book.getAuthorName())
                 .completionRate(book.getFullReadRate())
                 .completionTime(book.getCompletionTime())
+                .isAudiobook(book.getIsAudiobook())
                 .build();
     }
 }
