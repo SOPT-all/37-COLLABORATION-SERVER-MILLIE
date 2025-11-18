@@ -32,7 +32,7 @@ public class BookService {
         }
 
         // 1. 키워드로 책 검색
-        List<Book> books = bookRepository.findByTitleContaining(keyword);
+        List<Book> books = bookRepository.findByTitleContainingOrder(keyword);
 
         // 2. 책 각각의 이미지
         Map<Long, String> bookImageMap = books.stream()
