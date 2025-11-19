@@ -1,5 +1,6 @@
 package com.sopt.collaboration.controller;
 
+import com.sopt.collaboration.dto.BookDetailResponseDto;
 import com.sopt.collaboration.dto.BookSearchResponseDto;
 import com.sopt.collaboration.dto.CategoryResponseDto;
 import com.sopt.collaboration.dto.ReviewResponseDto;
@@ -69,6 +70,15 @@ public class MillieController {
 
         return CommonApiResponse.success(
                 SuccessCode.BOOK_RETRIEVED,
+                response
+        );
+    }
+
+    @GetMapping("/books/{bookId}")
+    public CommonApiResponse<BookDetailResponseDto> getBookDetail(@PathVariable Long bookId) {
+        BookDetailResponseDto response = bookService.getBookDetail(bookId);
+        return CommonApiResponse.success(
+                SuccessCode.BOOK_DETAIL_RETRIEVED,
                 response
         );
     }
