@@ -34,7 +34,7 @@ public class ReviewResponseDto {
 	public static ReviewResponseDto from(Review review) {
 		return ReviewResponseDto.builder()
 				.reviewId(review.getId())
-				.bookId(review.getBookId())
+				.bookId(review.getBook().getBookId())
 				.reviewerName(review.getReviewerName())
 				.createdDate(review.getCreatedDate())
 				.reviewContent(review.getContent())
