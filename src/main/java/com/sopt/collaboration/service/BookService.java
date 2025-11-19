@@ -61,7 +61,7 @@ public class BookService {
 
     public BookDetailResponseDto getBookDetail(Long bookId) {
 
-        Book book = bookRepository.findById(bookId)
+        Book book = bookRepository.findByIdWithReviews(bookId)
                 .orElseThrow(() -> new BaseException(ErrorCode.BOOK_NOT_FOUND));
 
         String bookImageUrl = s3Service.generatePresignedUrlOrNull(book.getBookImageKey());
@@ -76,7 +76,6 @@ public class BookService {
                 reviews
         );
     }
-
 }
 
 

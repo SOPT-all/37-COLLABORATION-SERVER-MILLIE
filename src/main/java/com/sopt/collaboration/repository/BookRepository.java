@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("""
@@ -20,4 +21,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             LENGTH(b.title) ASC                   
     """)
     List<Book> findByTitleContainingOrder(@Param("keyword") String keyword);
+
+    @Query("SELECT b FROM Book b LEFT JOIN FETCH b.reviews WHERE b.bookId = :bookId")
+    Optional<Book> findByIdWithReviews(@Param("bookId") Long bookId);
 }
