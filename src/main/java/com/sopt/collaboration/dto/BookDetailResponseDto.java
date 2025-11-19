@@ -45,12 +45,12 @@ public class BookDetailResponseDto {
     private String bookDescription;
 
     @Schema(description = "리뷰 리스트")
-    private List<ReviewSummaryDto> reviews;
+    private List<ReviewResponseDto> reviews;
 
     public static BookDetailResponseDto from(
             Book book,
             String bookImageUrl,
-            List<ReviewSummaryDto> reviewDtos
+            List<ReviewResponseDto> reviews
     ) {
         return BookDetailResponseDto.builder()
                 .bookId(book.getBookId())
@@ -63,7 +63,7 @@ public class BookDetailResponseDto {
                 .totalReviewCount(book.getReviews().size())
                 .completionRate(book.getFullReadRate())
                 .bookDescription(book.getIntroduce())
-                .reviews(reviewDtos)
+                .reviews(reviews)
                 .build();
     }
 }

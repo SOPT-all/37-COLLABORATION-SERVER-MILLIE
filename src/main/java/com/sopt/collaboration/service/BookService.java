@@ -2,7 +2,7 @@ package com.sopt.collaboration.service;
 
 import com.sopt.collaboration.dto.BookDetailResponseDto;
 import com.sopt.collaboration.dto.BookSearchResponseDto;
-import com.sopt.collaboration.dto.ReviewSummaryDto;
+import com.sopt.collaboration.dto.ReviewResponseDto;
 import com.sopt.collaboration.entity.Banner;
 import com.sopt.collaboration.entity.Book;
 import com.sopt.collaboration.global.exception.BaseException;
@@ -66,14 +66,14 @@ public class BookService {
 
         String bookImageUrl = s3Service.generatePresignedUrlOrNull(book.getBookImageKey());
 
-        List<ReviewSummaryDto> reviewDtos = book.getReviews().stream()
-                .map(ReviewSummaryDto::from)
+        List<ReviewResponseDto> reviews = book.getReviews().stream()
+                .map(ReviewResponseDto::from)
                 .collect(Collectors.toList());
 
         return BookDetailResponseDto.from(
                 book,
                 bookImageUrl,
-                reviewDtos
+                reviews
         );
     }
 
