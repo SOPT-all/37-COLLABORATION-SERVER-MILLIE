@@ -14,12 +14,12 @@ public enum ErrorCode implements ErrorType {
 	// 리뷰 에러
 	REVIEW_NOT_FOUND("R001", "리뷰를 찾을 수 없습니다", 404),
 
-    // 카테고리 에러
-    CATEGORY_NOT_FOUND("C404", "카테고리를 찾을 수 없습니다", 404),
+	// 카테고리 에러
+	CATEGORY_NOT_FOUND("C404", "카테고리를 찾을 수 없습니다", 404),
 
-    // 도서 검색 에러
-    INVALID_KEYWORD("B404", "검색 키워드를 찾을 수 없습니다", 404),
-    BOOK_NOT_FOUND("B403", "도서를 찾을 수 없습니다.", 404);
+	// 도서 검색 에러
+	INVALID_KEYWORD("B404", "검색 키워드를 찾을 수 없습니다", 404),
+	BOOK_NOT_FOUND("B403", "도서를 찾을 수 없습니다.", 404);
 
 	private final String code;
 	private final String message;

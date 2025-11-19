@@ -21,7 +21,7 @@ public class ReviewService {
 	@Transactional
 	public ReviewResponseDto toggleLike(Long reviewId) {
 		Review review = reviewRepository.findById(reviewId)
-				.orElseThrow(() -> new BaseException(ErrorCode.REVIEW_NOT_FOUND));
+			.orElseThrow(() -> new BaseException(ErrorCode.REVIEW_NOT_FOUND));
 
 		review.toggleLike();
 

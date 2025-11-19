@@ -1,13 +1,21 @@
 package com.sopt.collaboration.entity;
 
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -15,61 +23,63 @@ import java.util.List;
 @Table(name = "Book")
 public class Book {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bookId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long bookId;
 
-    @Column(nullable = false, length = 20)
-    private String title;
+	@Column(nullable = false, length = 20)
+	private String title;
 
-    @Column(nullable = false, length = 20)
-    private String authorName;
+	@Column(nullable = false, length = 20)
+	private String authorName;
 
-    @Column(length = 20)
-    private String novelType;
+	@Column(length = 20)
+	private String novelType;
 
-    @Column(length = 20)
-    private String publishedDate;
+	@Column(length = 20)
+	private String publishedDate;
 
-    @Column(nullable = false)
-    private Float rating;
+	@Column(nullable = false)
+	private Float rating;
 
-    @Column(nullable = false)
-    private Integer fullReadRate;
+	@Column(nullable = false)
+	private Integer fullReadRate;
 
-    @Column(nullable = false)
-    private Integer completionTime;
+	@Column(nullable = false)
+	private Integer completionTime;
 
-    @Column(nullable = false)
-    private Boolean isAudiobook;
+	@Column(nullable = false)
+	private Boolean isAudiobook;
 
-    @Column(columnDefinition = "TEXT")
-    private String introduce;
+	@Column(columnDefinition = "TEXT")
+	private String introduce;
 
-    @Column(name = "book_image_key")
-    private String bookImageKey;
+	@Column(name = "book_image_key")
+	private String bookImageKey;
 
-    @Column(length = 20)
-    private String voiceActor;
+	@Column(length = 20)
+	private String voiceActor;
 
-    @OneToOne(mappedBy = "book")
-    private Banner banner;
+	@OneToOne(mappedBy = "book")
+	private Banner banner;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
+	@OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Review> reviews = new ArrayList<>();
 
-    @Builder
-    private Book(String title, String authorName, String novelType, String publishedDate, Float rating, Integer fullReadRate, Integer completionTime, Boolean isAudiobook, String introduce, String bookImageKey, String voiceActor) {
-        this.title = title;
-        this.authorName = authorName;
-        this.novelType = novelType;
-        this.publishedDate = publishedDate;
-        this.rating = rating;
-        this.fullReadRate = fullReadRate;
-        this.completionTime = completionTime;
-        this.isAudiobook = isAudiobook;
-        this.introduce = introduce;
-        this.bookImageKey = bookImageKey;
-        this.voiceActor = voiceActor;
-    }
+	@Builder
+	private Book(String title, String authorName, String novelType, String publishedDate, Float rating,
+		Integer fullReadRate, Integer completionTime, Boolean isAudiobook, String introduce, String bookImageKey,
+		String voiceActor) {
+		this.title = title;
+		this.authorName = authorName;
+		this.novelType = novelType;
+		this.publishedDate = publishedDate;
+		this.rating = rating;
+		this.fullReadRate = fullReadRate;
+		this.completionTime = completionTime;
+		this.isAudiobook = isAudiobook;
+		this.introduce = introduce;
+		this.bookImageKey = bookImageKey;
+		this.voiceActor = voiceActor;
+	}
 }
