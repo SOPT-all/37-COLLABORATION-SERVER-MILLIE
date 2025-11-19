@@ -5,7 +5,7 @@ SET character_set_client = utf8mb4;
 SET character_set_connection = utf8mb4;
 SET character_set_results = utf8mb4;
 
-INSERT INTO Category (title, description, category_image_key)
+INSERT INTO category (title, description, category_image_key)
 VALUES
     ('소설', '추리/스릴러,킬러 스파이,법의학 스릴러,SF,판타지 등', 'images/category-images/CATEGORY-IMAGE-NOVEL.png'),
     ('세계문학전집', '열린책들,민음사,현대지성,을유문화사,살림,휴머니스트,문예출판사 등', 'images/category-images/CATEGORY-IMAGE-WORLD-LITERATURE.png'),

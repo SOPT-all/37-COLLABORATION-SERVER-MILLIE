@@ -1,6 +1,7 @@
 package com.sopt.collaboration.dto;
 
 import com.sopt.collaboration.entity.Review;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,13 +34,13 @@ public class ReviewResponseDto {
 
 	public static ReviewResponseDto from(Review review) {
 		return ReviewResponseDto.builder()
-				.reviewId(review.getId())
-				.bookId(review.getBook().getBookId())
-				.reviewerName(review.getReviewerName())
-				.createdDate(review.getCreatedDate())
-				.reviewContent(review.getContent())
-				.likeCount(review.getLikeCount())
-				.isLiked(review.isLiked())
-				.build();
+			.reviewId(review.getId())
+			.bookId(review.getBook().getBookId())
+			.reviewerName(review.getReviewerName())
+			.createdDate(review.getCreatedDate())
+			.reviewContent(review.getContent())
+			.likeCount(review.getLikeCount())
+			.isLiked(review.isLiked())
+			.build();
 	}
 }
