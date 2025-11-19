@@ -74,6 +74,11 @@ public class MillieController {
         );
     }
 
+    @Operation(summary = "도서 상세 정보 조회", description = "도서 상세 정보를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "도서 상세 정보 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
     @GetMapping("/books/{bookId}")
     public CommonApiResponse<BookDetailResponseDto> getBookDetail(@PathVariable Long bookId) {
         BookDetailResponseDto response = bookService.getBookDetail(bookId);
