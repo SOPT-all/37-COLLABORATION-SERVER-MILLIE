@@ -33,6 +33,9 @@ public class BookSummaryDto {
     @Schema(description = "오디어북 여부", example = "FALSE")
     private Boolean isAudiobook;
 
+    @Schema(description = "성우 이름", example = "임은지")
+    private String voiceActor;
+
     public static BookSummaryDto from(Book book, String imageUrl) {
         return BookSummaryDto.builder()
                 .bookId(book.getBookId())
@@ -42,6 +45,7 @@ public class BookSummaryDto {
                 .completionRate(book.getFullReadRate())
                 .completionTime(book.getCompletionTime())
                 .isAudiobook(book.getIsAudiobook())
+                .voiceActor(book.getVoiceActor())
                 .build();
     }
 }
