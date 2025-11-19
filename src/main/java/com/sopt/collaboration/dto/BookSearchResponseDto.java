@@ -19,6 +19,9 @@ public class BookSearchResponseDto {
     @Schema(description = "검색 키워드", example = "홍학")
     private String keyword;
 
+    @Schema(description = "검색된 책 개수")
+    private int bookCount;
+
     @Schema(description = "검색된 책 리스트")
     private List<BookSummaryDto> books;
 
@@ -34,6 +37,7 @@ public class BookSearchResponseDto {
     ) {
         return BookSearchResponseDto.builder()
                 .keyword(keyword)
+                .bookCount(books.size())
                 .banner(BannerDto.from(banner, bannerImageUrl))
                 .books(books.stream()
                         .map(book -> BookSummaryDto.from(book, bookImageMap.get(book.getBookId())))
