@@ -5,7 +5,7 @@ SET character_set_client = utf8mb4;
 SET character_set_connection = utf8mb4;
 SET character_set_results = utf8mb4;
 
-INSERT INTO Book (title, author_name, novel_type, published_date, rating, full_read_rate, completion_time, is_audiobook, book_image_key, introduce, voice_actor)
+INSERT INTO book (title, author_name, novel_type, published_date, rating, full_read_rate, completion_time, is_audiobook, book_image_key, introduce, voice_actor)
 VALUES
     ('홍학의 자리', '정해연', '소설', '2021-07-21', 3.9, 80, 247, 0, 'images/book-covers/BOOK_IMAGE_1.png', '“이 행복이 영원할 거라고 생각한 적은 없었다. 그러나 이런 끝을 상상한 적도 없었다.”예측 불가! 한국 미스터리 사상 전무후무한 반전!', NULL),
     ('홍학의 자리', '정해연', '소설', '2021-07-21', 3.9, 80, 247, 1, 'images/book-covers/BOOK_IMAGE_2.png', NULL, '임은지'),
