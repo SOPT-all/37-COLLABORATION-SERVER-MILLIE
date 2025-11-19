@@ -1,0 +1,14 @@
+spring:
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY}
+        secret-key: ${AWS_SECRET_KEY}
+      region:
+        static: ap-northeast-2
+      s3:
+        bucket: ${AWS_S3_BUCKET}
+
+aws:
+  s3:
+    presigned-url-expiration: 3600  # PreSigned URL 유효기간 (초 단위, 기본 1시간)
