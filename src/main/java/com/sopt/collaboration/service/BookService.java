@@ -1,6 +1,8 @@
 package com.sopt.collaboration.service;
 
+import com.sopt.collaboration.dto.BookDetailResponseDto;
 import com.sopt.collaboration.dto.BookSearchResponseDto;
+import com.sopt.collaboration.dto.ReviewSummaryDto;
 import com.sopt.collaboration.entity.Banner;
 import com.sopt.collaboration.entity.Book;
 import com.sopt.collaboration.global.exception.BaseException;
@@ -56,6 +58,25 @@ public class BookService {
                 bannerImageUrl
         );
     }
+
+    public BookDetailResponseDto getBookDetail(Long bookId) {
+
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BaseException(ErrorCode.BOOK_NOT_FOUND));
+
+        String bookImageUrl = s3Service.generatePresignedUrlOrNull(book.getBookImageKey());
+
+        List<ReviewSummaryDto> reviewDtos = book.getReviews().stream()
+                .map(ReviewSummaryDto::from)
+                .collect(Collectors.toList());
+
+        return BookDetailResponseDto.from(
+                book,
+                bookImageUrl,
+                reviewDtos
+        );
+    }
+
 }
 
 
