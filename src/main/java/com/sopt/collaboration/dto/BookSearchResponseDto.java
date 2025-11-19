@@ -35,13 +35,17 @@ public class BookSearchResponseDto {
             Map<Long, String> bookImageMap,
             String bannerImageUrl
     ) {
+        List<BookSummaryDto> bookSummaries = books.stream()
+                .map(book -> BookSummaryDto.from(book, bookImageMap.get(book.getBookId())))
+                .toList();
+
+        BannerDto bannerDto = BannerDto.from(banner, bannerImageUrl);
+
         return BookSearchResponseDto.builder()
                 .keyword(keyword)
                 .bookCount(books.size())
-                .banner(BannerDto.from(banner, bannerImageUrl))
-                .books(books.stream()
-                        .map(book -> BookSummaryDto.from(book, bookImageMap.get(book.getBookId())))
-                        .toList())
+                .banner(bannerDto)
+                .books(bookSummaries)
                 .build();
     }
 }
