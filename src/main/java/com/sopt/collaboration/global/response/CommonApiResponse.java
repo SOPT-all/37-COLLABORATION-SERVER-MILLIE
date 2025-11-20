@@ -10,7 +10,7 @@ public class CommonApiResponse<T> {
 	@Schema(description = "응답 코드", example = "M001")
 	private final String code;
 
-	@Schema(description = "응답 메시지", example = "회원 정보 조회 성공")
+	@Schema(description = "응답 메시지", example = "## 작업을 성공했습니다")
 	private final String message;
 
 	@Schema(description = "응답 데이터", nullable = true)

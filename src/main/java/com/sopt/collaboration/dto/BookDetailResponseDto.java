@@ -29,7 +29,7 @@ public class BookDetailResponseDto {
 	@Schema(description = "책 유형", example = "소설")
 	private String bookType;
 
-	@Schema(description = "출판일", example = "2021-07-21")
+	@Schema(description = "출판일", example = "2021.07.21")
 	private String publishedDate;
 
 	@Schema(description = "평점", example = "3.9")
